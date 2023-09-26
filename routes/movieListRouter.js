@@ -1,34 +1,18 @@
-const {Router} = require("express");
+const {Movies} =require("../mongoConfig");
+const {ObjectId}= require("mongodb")
 
-const {addMovie,getAllMovies,getMovie} = require("../controllers/movieListController");
+const addMovie =(req) =>{
+    return Movies.insertOne(req.body);
+}
 
-const movieDataRouter = Router();
+const getMovie =(req) =>{
+    const id = new ObjectId(req.params.movieId)
+    console.log(id);
+    return Movies.findOne({_id:req.params.movieId});
+}
 
-movieDataRouter.post("/addmovie", async (req, res) => {
-    try {
-      const data = await addMovie(req);
-      res.send(data);
-    } catch (error) {
-      res.send({ err: error.message });
-    }
-  });
+const getAllMovies = (req) =>{
+    return Movies.find({}).toArray();
+}
 
-  movieDataRouter.get("/get/:movieId", async (req, res) => {
-    try {
-      const data = await getMovie(req);
-      res.send(data);
-    } catch (error) {
-      res.send({ err: error.message });
-    }
-  });
-
-movieDataRouter.get("/moviesAll", async (req, res) => {
-    try {
-      const data = await getAllMovies(req);
-      res.send(data);
-    } catch (error) {
-      res.send({ err: error.message });
-    }
-  });
-
-  module.exports = movieDataRouter;
+module.exports = {addMovie,getAllMovies,getMovie}
